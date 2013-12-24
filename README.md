@@ -7,16 +7,16 @@ MLFinal
 [Directory]
 ---------------------
 ```
-  ./src     :  source code
-  ./save    :  temporary data or model
-                  * train_data
-                  * test_data
-                  * train_model : to reuse them in blending and bagging
-  ./lib     :  library we use
-                  * libsvm : for matlab2013 & osx10.9
-  MLFinal.m :  main file
+ ./src     :  source code
+ ./save    :  temporary data or model
+                 * train_data
+                 * test_data
+                 * train_model : to reuse them in blending and bagging
+ ./lib     :  library we use
+                 * libsvm : for matlab2013 & osx10.9
+ MLFinal.m :  main file
 ```
-  *.dat should be put in root directory
+*.dat should be put in root directory
 
 [Usage]
 ---------------------
@@ -41,10 +41,10 @@ Since there are no labels in test data, the prediction has no meaning.
 ---------------------
 Read data by libsvmread
 ```
-   train_raw_label : N x 1      double array
-   train_raw_inst  : N x 12810  sparse matrix
-                         * each image is 105 x 122 = 12810 pixel
+ train_raw_label : N x 1      double array
+ train_raw_inst  : N x 12810  sparse matrix
+                      * each image is 105 x 122 = 12810 pixel
 
-   test_raw_label  : N x 1      double array
-   test_raw_inst   : N x 12810  sparse matrix
+ test_raw_label  : N x 1      double array
+ test_raw_inst   : N x 12810  sparse matrix
 ```
