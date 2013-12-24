@@ -8,38 +8,43 @@ MLFinal
 ---------------------
 ```
   ./src     :  source code
-  ./result  :  temporary or final result
-                  * save temporary result to reuse them in blending and bagging
+  ./save    :  temporary data or model
+                  * train_data
+                  * test_data
+                  * train_model : to reuse them in blending and bagging
   ./lib     :  library we use
                   * libsvm : for matlab2013 & osx10.9
   MLFinal.m :  main file
 ```
   *.dat should be put in root directory
+
+[Usage]
+---------------------
+Work-flow:
+In command window type 
+```
+MLFinal
+```
+Type [R], and then select training model. Finally, type [P] to predict.
+Since there are no labels in test data, the prediction has no meaning.
+
+```
+[1] Linear SVM
+
+[R] to read training data. If data already in ./save/, just use it.
+[T] to read test data. If data already in ./save/, just use it.
+[P] Predict. You shoud run training and [T] before predict.
+[E] Quit
+```
   
 [Data]
 ---------------------
-    Data is an 1xN cell.
-    Data(1,i) is an data(D), which is Nx2 array
-    D(1,1) is the label of the D, D(1,2) is always zero
-    D(i,1) and D(i,2) is the pixel of character and the pixel value serparately 
+Read data by libsvmread
 ```
-    i.e.  [  label   0
-            pixel1   pixel1_value
-            pixel2   pixel2_value
-               ...   ...            ]
+   train_raw_label : N x 1      double array
+   train_raw_inst  : N x 12810  sparse matrix
+                         * each image is 105 x 122 = 12810 pixel
 
-    for example
-        train.dat:
-            2 123:0.2 234:0.5 456:0.7
-           11  45:0.6  89:0.2
-
-        trainData:
-            cell{1,1} = [    2 0
-                           123 0.2
-                           234 0.5
-                           456 0.7  ] 
-
-            cell{1,2} = [   11 0
-                            45 0.6
-                            89 0.2  ]      
+   test_raw_label  : N x 1      double array
+   test_raw_inst   : N x 12810  sparse matrix
 ```
