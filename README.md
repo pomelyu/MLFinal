@@ -51,7 +51,7 @@ case 'n'
         model_idx = n;
     else
         if exist('train_raw_inst', 'var') == 1                    
-            model = trainNEWM_ODEL(train_raw_label, train_raw_inst);
+            model = trainNEW_MODEL(train_raw_label, train_raw_inst);
             model_name = 'NEW_MODEL';
             model_idx = 1;
             save ./save/model_NEW_MODEL.mat model
