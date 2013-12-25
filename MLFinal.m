@@ -23,7 +23,16 @@ while 1
     fprintf('   [T] Read test data\n');
     fprintf('   [P] Prediction with model %s\n', model_name);
     fprintf('   [E] Exit.\n');
-        fprintf('==================================\n');
+    fprintf('==================================\n');
+    
+    % read default training data
+    if exist('./save/trainData.mat', 'file') == 2
+        load ./save/trainData.mat
+    else
+        fprintf('-- Loadind default training data\n');
+        [train_raw_label, train_raw_inst] = libsvmread('ml2013final_train.dat');
+        save ./save/trainData.mat train_raw_label train_raw_inst;
+    end
     
     type = input('-- Type = ? ', 's');
     
@@ -51,16 +60,10 @@ while 1
         case 'R'
             file_name = input('-- Enter the training data or remain blank for default -- ', 's');
             if strcmp(file_name, '')
-                if exist('./save/trainData.mat', 'file') == 2
-                    load ./save/trainData.mat
-                else
-                    [train_raw_label, train_raw_inst] = libsvmread('ml2013final_train.dat');
-                    save ./save/trainData.mat train_raw_label train_raw_inst;
-                end
-            else
-                [train_raw_label, train_raw_inst] = libsvmread(file_name);
-                save ./save/trainData.mat train_raw_label train_raw_inst;
+                file_name = 'ml2013final_train.dat';
             end
+            [train_raw_label, train_raw_inst] = libsvmread(file_name);
+            save ./save/trainData.mat train_raw_label train_raw_inst;
             
             
         % Read test data

@@ -25,11 +25,11 @@ In command window type
 ```
 MLFinal
 ```
-Type [R], and then select training model. Finally, type [P] to predict.
+Default training data would be loaded in workspace automatically, and then select training model. Finally, type [P] to predict.
 Since there are no labels in test data, the prediction has no meaning.
 
 ```
-[1] Linear SVM
+[1] Linear SVM without validation. Just for simple test.
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.
