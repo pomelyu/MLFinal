@@ -37,6 +37,7 @@ while 1
     type = input('-- Type = ? ', 's');
     
     switch type
+        % ========== Add training model here ================
         case '1'
             % if model already exist, just load to workspace
             if exist('./save/model_LinearSVM.mat', 'file') == 2
@@ -44,10 +45,8 @@ while 1
                 model_name = 'Linear SVM';
                 model_idx = 1;
             else
-                C = 1;
-                if exist('train_raw_inst', 'var') == 1
-                    paraStr = ['-s 0 -t 0 -c ' num2str(C) ' -q'];
-                    model = svmtrain(train_raw_label, train_raw_inst, paraStr);
+                if exist('train_raw_inst', 'var') == 1                    
+                    model = trainLinearSVM(train_raw_label, train_raw_inst);
                     model_name = 'Linear SVM';
                     model_idx = 1;
                     save ./save/model_LinearSVM.mat model
@@ -55,7 +54,8 @@ while 1
                     fprintf('-- Please read training data\n')
                 end
             end
-        
+            
+        % ========== End training model ====================
         % Read training data
         case 'R'
             file_name = input('-- Enter the training data or remain blank for default -- ', 's');
@@ -110,8 +110,10 @@ end
 function Eout = TestModel(test_label, test_inst, model, model_idx)
 
 switch(model_idx);
+    % ========== Add model testing here ================
     case 1
-        [predict_label, Eout, prob_estimates] = svmpredict(test_label, test_inst, model);
+        Eout = testLinearSVM(test_label, test_inst, model);
+    % ========== End model testing =====================
     otherwise
         printf('-- Please training data first\n');
 end

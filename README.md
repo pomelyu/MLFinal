@@ -36,6 +36,45 @@ Since there are no labels in test data, the prediction has no meaning.
 [P] Predict. You shoud run training and [T] before predict.
 [E] Quit
 ```
+
+[How to add training model]
+---------------------
+training model is NEW_MODEL
+
+In ML_Final.m, based on case'1' in switch, add 
+```
+% ========== Add training model here ================
+case 'n'
+    if exist('./save/model_NEW_MODEL.mat', 'file') == 2
+        load ./save/model_NEW_MODEL.mat
+        model_name = 'NEW_MODEL';
+        model_idx = n;
+    else
+        if exist('train_raw_inst', 'var') == 1                    
+            model = trainNEWM_ODEL(train_raw_label, train_raw_inst);
+            model_name = 'NEW_MODEL';
+            model_idx = 1;
+            save ./save/model_NEW_MODEL.mat model
+        else
+            fprintf('-- Please read training data\n')
+        end
+    end
+            
+% ========== End training model ====================
+```
+```
+% ========== Add model testing here ================
+case 1
+    Eout = testNEW_MODEL(test_label, test_inst, model);
+% ========== End model testing =====================
+```
+
+In /src, add two function
+```
+model = trainNEW_MODEL( train_label, train_inst )
+Eout = testNEW_MODEL(test_label, test_inst, model)
+
+```
   
 [Data]
 ---------------------
