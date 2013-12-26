@@ -29,7 +29,7 @@ In first time, Default training data would be loaded in workspace automatically.
 Since there are no labels in test data, the prediction has no meaning.
 
 ```
-[1] Linear SVM without validation. Just for simple test.
+[1] Linear SVM with 5-fold validation in C = [1 0.1 0.01 0.001 0.0001].
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.
