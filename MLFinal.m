@@ -75,7 +75,7 @@ while 1
                         save ./save/train_downsampling_inst.mat train_downsampling_inst
                     end
                     fprintf('-- End downSampling\n');
-                    C = 0.001:0.001:0.01;
+                    C = 0.008:0.002:0.016;
                     model = trainLinearSVM(train_raw_label, train_downsampling_inst, C);
                     model_name = 'Linear SVM with DownSampling';
                     model_idx = 4;
