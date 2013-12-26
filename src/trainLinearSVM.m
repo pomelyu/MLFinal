@@ -2,9 +2,18 @@ function model = trainLinearSVM( train_label, train_inst )
 
 addpath('./lib/libsvm');
 
-C = 1;
+C = [1 0.1 0.01 0.001 0.0001];
+n = size(C,2);
+E = zeros(1,n);
 
-paraStr = ['-s 0 -t 0 -c ' num2str(C) ' -q'];
+for i=1:n
+    paraStr = ['-s 0 -t 0 -c ' num2str(C(1,i)) ' -v 5 -q'];
+    E(1,i) = svmtrain(train_label, train_inst, paraStr);
+end
+
+[E, idx] = max(E);
+
+paraStr = ['-s 0 -t 0 -c ' num2str(C(1,idx)) ' -q'];
 model = svmtrain(train_label, train_inst, paraStr);
 
 end
