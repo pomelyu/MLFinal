@@ -15,10 +15,12 @@ model_idx  = 0;
 
 %% implement
 while 1
+    % ========== Add training model chice here ==========
     fprintf('==================================\n');
     fprintf('-- Choose the number of Problem --\n');
     fprintf('   [1] Linear SVM.\n');
     fprintf('----------------------------------\n');
+    % ========== End Add model choice ===================
     fprintf('   [R] Read training data\n');
     fprintf('   [T] Read test data\n');
     fprintf('   [P] Prediction with model %s\n', model_name);

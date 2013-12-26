@@ -43,7 +43,13 @@ Since there are no labels in test data, the prediction has no meaning.
 [How to add training model]
 ---------------------
 training model is NEW_MODEL
-
+```
+% ========== Add training model chice here ==========
+fprintf('==================================\n');
+fprintf('-- Choose the number of Problem --\n');
+fprintf('   [n*] NEW_MODEL brief\n');
+% ========== End Add model choice ===================
+```
 In ML_Final.m, based on case'1' in switch, add 
 ```
 % ========== Add training model here ================
