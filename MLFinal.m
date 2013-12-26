@@ -22,6 +22,7 @@ while 1
     fprintf('   [R] Read training data\n');
     fprintf('   [T] Read test data\n');
     fprintf('   [P] Prediction with model %s\n', model_name);
+    fprintf('   [C] Calculate Ein with model %s\n', model_name);
     fprintf('   [E] Exit.\n');
     fprintf('==================================\n');
     
@@ -79,6 +80,15 @@ while 1
             else
                 [test_raw_label, test_raw_inst] = libsvmread(file_name);
                 save ./save/testData.mat test_raw_label test_raw_inst;
+            end
+            
+        % Calculate Ein with model
+        case 'C'
+            if exist('train_raw_inst', 'var') == 1
+               Ein = TestModel(train_raw_label, train_raw_inst, model, model_idx);
+               fprintf('-- Done with Ein = %2.2f%%\n', Ein*100);
+            else
+               fprintf('-- Please read train data\n');
             end
             
             

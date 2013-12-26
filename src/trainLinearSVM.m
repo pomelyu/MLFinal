@@ -1,6 +1,6 @@
 function model = trainLinearSVM( train_label, train_inst )
 
-addpath('./lib/libsvm');
+%addpath('./lib/libsvm');
 
 C = [1 0.1 0.01 0.001 0.0001];
 n = size(C,2);

@@ -33,7 +33,8 @@ Since there are no labels in test data, the prediction has no meaning.
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.
-[P] Predict. You shoud run training and [T] before predict.
+[P] Predict. You shoud run training before predict.
+[C] Calculate Ein of training data with specific model
 [E] Quit
 ```
 
