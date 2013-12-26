@@ -7,13 +7,13 @@ MLFinal
 [Directory]
 ---------------------
 ```
- ./src     :  source code
- ./save    :  temporary data or model
-                 * train_data
-                 * test_data
-                 * train_model : to reuse them in blending and bagging
- ./lib     :  library we use
-                 * libsvm : for matlab2013 & osx10.9
+ /src     :  source code
+ /save    :  temporary data or model
+                * train_data
+                * test_data
+                * train_model : to reuse them in blending and bagging
+ /lib     :  library we use
+                * libsvm : for matlab2013 & osx10.9
  MLFinal.m :  main file
 ```
 *.dat should be put in root directory
@@ -25,7 +25,7 @@ In command window type
 ```
 MLFinal
 ```
-Default training data would be loaded in workspace automatically, and then select training model. Finally, type [P] to predict.
+In first time, Default training data would be loaded in workspace automatically. Then select appropriate training model. If the there has been the model in /save, MLFinal would use the result immediately. Otherwise, delete the corresponding model in /save, and MLFinal would training data use the model again. Finally, type [P] to predict.
 Since there are no labels in test data, the prediction has no meaning.
 
 ```
@@ -64,7 +64,7 @@ case 'n'
 ```
 ```
 % ========== Add model testing here ================
-case 1
+case n
     Eout = testNEW_MODEL(test_label, test_inst, model);
 % ========== End model testing =====================
 ```
