@@ -30,6 +30,8 @@ Since there are no labels in test data, the prediction has no meaning.
 
 ```
 [1] Linear SVM with 5-fold validation in C = [1 0.1 0.01 0.001 0.0001].
+[4] Linear SVM using downsampling with 5-fold validation
+[7] Gaussian kernel SVM using downsampling with 5-fold validation
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.
@@ -73,8 +75,7 @@ case n
 In /src, add two function
 ```
 model = trainNEW_MODEL( train_label, train_inst )
-Eout = testNEW_MODEL(test_label, test_inst, model)
-
+Err = testNEW_MODEL(test_label, test_inst, model)
 ```
   
 [Data]
