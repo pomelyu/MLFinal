@@ -41,6 +41,8 @@ Since there are no labels in test data, the prediction has no meaning.
 [E] Quit
 ```
 
+[C] would calculate Ein and ask whether to record the result in ./log/
+
 [How to add training model]
 ---------------------
 training model is NEW_MODEL
