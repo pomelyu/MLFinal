@@ -14,6 +14,7 @@ MLFinal
                 * train_model : to reuse them in blending and bagging
  /lib     :  library we use
                 * libsvm : for matlab2013 & osx10.9
+                           for matlab2010 & windows 8
  MLFinal.m :  main file
 ```
 *.dat should be put in root directory
