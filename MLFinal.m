@@ -7,9 +7,7 @@ addpath('./save');
 % directory of libsvm
 addpath('./lib/libsvm');
 
-fid = fopen('log.txt', 'w');
-
-% training mode
+%% training mode
 model_name = 'None';
 model_idx  = 0;
 
@@ -20,6 +18,7 @@ while 1
     fprintf('-- Choose the number of Problem --\n');
     fprintf('   [1] Linear SVM.\n');
     fprintf('   [4] Linear SVM with downSampling\n');
+    fprintf('   [7] Gaussian Kernel SVM + downSampling\n');
     fprintf('----------------------------------\n');
     % ========== End Add model choice ===================
     fprintf('   [R] Read training data\n');
@@ -85,6 +84,32 @@ while 1
                 end
             end
             
+        case '7'
+            % if model already exist, just load to workspace
+            if exist('./save/model_GaussianSVM_DownSampling.mat', 'file') == 2
+                load ./save/model_GaussianSVM_DownSampling.mat
+                model_name = 'Gaussian SVM with DownSampling';
+                model_idx = 7;
+            else
+                if exist('train_raw_inst', 'var') == 1
+                    if exist('./save/train_downsampling_inst.mat', 'file') == 2
+                        load ./save/train_downsampling_inst.mat
+                    else
+                        train_downsampling_inst = DownSampling(train_raw_inst);
+                        save ./save/train_downsampling_inst.mat train_downsampling_inst
+                    end
+                    fprintf('-- End downSampling\n');
+                    sigma = [10 100 1000];
+                    C = [0.1 1 10];
+                    model = trainGaussianSVM(train_raw_label, train_downsampling_inst, sigma, C);
+                    model_name = 'Gaussian SVM with DownSampling';
+                    model_idx = 7;
+                    save ./save/model_GaussianSVM_DownSampling.mat model
+                else
+                    fprintf('-- Please read training data\n');
+                end
+            end
+            
         % ========== End training model ====================
         % Read training data
         case 'R'
@@ -116,6 +141,16 @@ while 1
             if exist('train_raw_inst', 'var') == 1
                Ein = TestModel(train_raw_label, train_raw_inst, model, model_idx);
                fprintf('-- Done with Ein = %2.2f%%\n', Ein*100);
+               isSave = input('-- Save the result ? [y]/[n]', 's');
+               if strcmp(isSave, 'y')
+                   file_name = [date ' ' num2str(hour(now)) ':' num2str(minute(now))];
+               else
+                   file_name = 'tmp_log';
+               end
+               fid = fopen(['./log/' file_name '.txt'], 'w');
+               fprintf(fid, 'Perform model with model index %d\n', model_idx);
+               fprintf(fid, '-- Done with Ein = %2.2f%%\n\n', Ein*100);
+               fclose(fid);
             else
                fprintf('-- Please read train data\n');
             end
@@ -142,8 +177,6 @@ while 1
     end
 end
 
-fclose(fid);
-
 end
 
 function Eout = TestModel(test_label, test_inst, model, model_idx)
@@ -154,9 +187,11 @@ switch(model_idx);
         Eout = testLinearSVM(test_label, test_inst, model);
     case 4
         Eout = testLinearSVM(test_label, test_inst, model);
+    case 7
+        Eout = testGaussianSVM(test_label, test_inst, model);
     % ========== End model testing =====================
     otherwise
-        printf('-- Please training data first\n');
+        fprintf('-- Please training data first\n');
 end
 
 end
