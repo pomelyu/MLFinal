@@ -141,8 +141,11 @@ while 1
         % Calculate Ein with model
         case 'C'
             if exist('train_raw_inst', 'var') == 1
-               Ein = TestModel(train_raw_label, train_raw_inst, model, model_idx);
+               [predict_label, Ein] = TestModel(train_raw_label, train_raw_inst, model, model_idx);
                fprintf('-- Done with Ein = %2.2f%%\n', Ein*100);
+               
+               % If input 'y', record Ein in ./log/data_time.txt.
+               % Otherwise, record Ein in ./log/tmp_log.txt
                isSave = input('-- Save the result ? [y]/[n]', 's');
                if strcmp(isSave, 'y')
                    file_name = [date ' ' num2str(hour(now)) ':' num2str(minute(now))];
@@ -161,8 +164,15 @@ while 1
         % Perform prediction on test data
         case 'P'
             if exist('test_raw_inst', 'var') == 1
-               Eout = TestModel(test_raw_label, test_raw_inst, model, model_idx);
+               [predict_label, Eout] = TestModel(test_raw_label, test_raw_inst, model, model_idx);
                fprintf('-- Done with Eout = %2.2d%\n', Eout*100);
+               
+               % print predict label in ./result/model_x_predict.txt
+               fid = fopen(['./result/model_' num2str(model_idx) '_predict.txt'], 'w');
+               for i=1:size(predict_label,1);
+                   fprintf(fid, '%d\n', predict_label(i,1));
+               end
+               fclose(fid);
             else
                fprintf('-- Please read test data\n');
             end
@@ -181,16 +191,16 @@ end
 
 end
 
-function Eout = TestModel(test_label, test_inst, model, model_idx)
+function [predict_label, Eout] = TestModel(test_label, test_inst, model, model_idx)
 
 switch(model_idx);
     % ========== Add model testing here ================
     case 1
-        Eout = testLinearSVM(test_label, test_inst, model);
+        [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
     case 4
-        Eout = testLinearSVM(test_label, test_inst, model);
+        [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
     case 7
-        Eout = testGaussianSVM(test_label, test_inst, model);
+        [predict_label, Eout] = testGaussianSVM(test_label, test_inst, model);
     % ========== End model testing =====================
     otherwise
         fprintf('-- Please training data first\n');

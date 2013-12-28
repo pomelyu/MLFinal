@@ -1,4 +1,4 @@
-function Err = testLinearSVM(test_label, test_inst, model)
+function [predict_label, Err] = testLinearSVM(test_label, test_inst, model)
 
 %addpath('./lib/libsvm');
 

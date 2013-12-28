@@ -7,14 +7,17 @@ MLFinal
 [Directory]
 ---------------------
 ```
- /src     :  source code
+ /lib     :  library we use
+                * libsvm : for matlab2013 & osx10.9
+                           for matlab2010 & windows 8
+ /log     :  log for Ein
+ /result  :  result of prediction, which is used to upload
  /save    :  temporary data or model
                 * train_data
                 * test_data
                 * train_model : to reuse them in blending and bagging
- /lib     :  library we use
-                * libsvm : for matlab2013 & osx10.9
-                           for matlab2010 & windows 8
+ /src     :  source code
+
  MLFinal.m :  main file
 ```
 *.dat should be put in root directory
@@ -42,6 +45,7 @@ Since there are no labels in test data, the prediction has no meaning.
 ```
 
 [C] would calculate Ein and ask whether to record the result in ./log/
+[P] predict the test data label and save the result in ./result/ for uploading
 
 [How to add training model]
 ---------------------
@@ -77,14 +81,14 @@ case 'n'
 ```
 % ========== Add model testing here ================
 case n
-    Eout = testNEW_MODEL(test_label, test_inst, model);
+    [predict_label, Eout] = testNEW_MODEL(test_label, test_inst, model);
 % ========== End model testing =====================
 ```
 
 In /src, add two function
 ```
 model = trainNEW_MODEL( train_label, train_inst )
-Err = testNEW_MODEL(test_label, test_inst, model)
+[predict_label, Err] = testNEW_MODEL(test_label, test_inst, model)
 ```
   
 [Data]
@@ -97,4 +101,8 @@ Read data by libsvmread
 
  test_raw_label  : N x 1      double array
  test_raw_inst   : N x 12810  sparse matrix
+
+ train_downsampling_inst
+                 : N x 3233 sparse matric
+                      * each image is 53 x 61 = 3233 pixel
 ```
