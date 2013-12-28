@@ -2,3 +2,4 @@
 *.dat
 save/trainData.mat
 save/testData.mat
+log/tmp_log.txt
