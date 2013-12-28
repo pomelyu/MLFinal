@@ -75,7 +75,8 @@ while 1
                     end
                     fprintf('-- End downSampling\n');
                     C = 0.008:0.002:0.016;
-                    model = trainLinearSVM(train_raw_label, train_downsampling_inst, C);
+                    model = trainLinearSVM_downsample(train_downsampling_inst,... 
+                        train_raw_label, train_raw_inst, C);
                     model_name = 'Linear SVM with DownSampling';
                     model_idx = 4;
                     save ./save/model_LinearSVM_DownSampling.mat model
@@ -101,7 +102,8 @@ while 1
                     fprintf('-- End downSampling\n');
                     sigma = [10 100 1000];
                     C = [0.1 1 10];
-                    model = trainGaussianSVM(train_raw_label, train_downsampling_inst, sigma, C);
+                    model = trainGaussianSVM_downsample(train_downsampling_inst, ...
+                        train_raw_label, train_raw_inst, sigma, C);
                     model_name = 'Gaussian SVM with DownSampling';
                     model_idx = 7;
                     save ./save/model_GaussianSVM_DownSampling.mat model

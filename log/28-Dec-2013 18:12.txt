@@ -1,0 +1,3 @@
+Perform model with model index 7
+-- Done with Ein = 6.97%
+
