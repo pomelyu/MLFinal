@@ -34,8 +34,9 @@ Since there are no labels in test data, the prediction has no meaning.
 
 ```
 [1] Linear SVM with 5-fold validation in C = [1 0.1 0.01 0.001 0.0001].
-[4] Linear SVM using downsampling with 5-fold validation
-[7] Gaussian kernel SVM using downsampling with 5-fold validation
+[2] Multiclass PLA
+[4] Linear SVM using downsampling with 5-fold validation in C = 0.008:0.002:0.016.
+[7] Gaussian kernel SVM using downsampling with 5-fold validation in Gimma = [10 100 1000] and C = [0.1 1 10].
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.
