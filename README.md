@@ -39,6 +39,7 @@ Since there are no labels in test data, the prediction has no meaning.
 [4] Linear SVM using downsampling with 5-fold validation in C = 0.008:0.002:0.016.
 [6] MultiClass RBF-OLS-Center
 [7] Gaussian kernel SVM using downsampling with 5-fold validation in Gimma = [10 100 1000] and C = [0.1 1 10].
+[9] MultiClass NN
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.
