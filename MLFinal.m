@@ -29,6 +29,8 @@ while 1
     fprintf('   [1] Linear SVM.\n');
     fprintf('   [4] Linear SVM with downSampling\n');
     fprintf('   [7] Gaussian Kernel SVM + downSampling\n');
+    fprintf('   [10]Linear SVM with cropping\n');
+    fprintf('   [13]Gaussian Kernel SVM + cropping\n');
     fprintf('----------------------------------\n');
     % ========== End Add model choice ===================
     fprintf('   [R] Read training data\n');
@@ -60,7 +62,7 @@ while 1
                     fprintf('-- Please read training data\n')
                 end
             end
-            
+        %    
         case '4'
             % if model already exist, just load to workspace
             if exist('./save/model_LinearSVM_DownSampling.mat', 'file') == 2
@@ -109,6 +111,59 @@ while 1
                     model_name = 'Gaussian SVM with DownSampling';
                     model_idx = 7;
                     save ./save/model_GaussianSVM_DownSampling.mat model
+                else
+                    fprintf('-- Please read training data\n');
+                end
+            end
+
+        case '10'
+            % if model already exist, just load to workspace
+            if exist('./save/model_LinearSVM_Cropping.mat', 'file') == 2
+                load ./save/model_LinearSVM_Cropping.mat
+                model_name = 'Linear SVM with Cropping';
+                model_idx = 10;
+            else
+                if exist('train_raw_inst', 'var') == 1
+                    if exist('./data/train_cropping_inst.mat', 'file') == 2
+                        load ./data/train_cropping_inst.mat
+                    else
+                        train_cropping_inst = ImgCropping(train_raw_inst);
+                        save ./data/train_cropping_inst.mat train_cropping_inst
+                    end
+                    fprintf('-- End Cropping\n');
+                    C = [0.01 0.1 1 10];
+                    model = trainLinearSVM(train_cropping_inst,... 
+                        train_raw_label, train_cropping_inst, C);
+                    model_name = 'Linear SVM with Cropping';
+                    model_idx = 10;
+                    save ./save/model_LinearSVM_Cropping.mat model
+                else
+                    fprintf('-- Please read training data\n');
+                end
+            end
+            
+        case '13'
+            % if model already exist, just load to workspace
+            if exist('./save/model_GaussianSVM_Cropping.mat', 'file') == 2
+                load ./save/model_GaussianSVM_Cropping.mat
+                model_name = 'Gaussian SVM with Cropping';
+                model_idx = 13;
+            else
+                if exist('train_raw_inst', 'var') == 1
+                    if exist('./data/train_cropping_inst.mat', 'file') == 2
+                        load ./data/train_cropping_inst.mat
+                    else
+                        train_cropping_inst = DownSampling(train_raw_inst);
+                        save ./data/train_cropping_inst.mat train_cropping_inst
+                    end
+                    fprintf('-- End Cropping\n');
+                    sigma = [10 100 1000];
+                    C = [0.1 1 10];
+                    model = trainGaussianSVM(train_cropping_inst, ...
+                        train_raw_label, train_cropping_inst, sigma, C);
+                    model_name = 'Gaussian SVM with Cropping';
+                    model_idx = 13;
+                    save ./save/model_GaussianSVM_Cropping.mat model
                 else
                     fprintf('-- Please read training data\n');
                 end
