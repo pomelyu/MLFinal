@@ -88,6 +88,7 @@ while 1
                     fprintf('-- Please read training data\n');
                 end
             end
+            clear train_downsampling_inst;
             
         case '7'
             % if model already exist, just load to workspace
@@ -115,6 +116,7 @@ while 1
                     fprintf('-- Please read training data\n');
                 end
             end
+            clear train_downsampling_inst;
 
         case '10'
             % if model already exist, just load to workspace
@@ -141,6 +143,7 @@ while 1
                     fprintf('-- Please read training data\n');
                 end
             end
+            clear train_cropping_inst;
             
         case '13'
             % if model already exist, just load to workspace
@@ -168,6 +171,7 @@ while 1
                     fprintf('-- Please read training data\n');
                 end
             end
+            clear train_cropping_inst;
             
         % ========== End training model ====================
         % Read training data
@@ -216,7 +220,7 @@ while 1
             else
                fprintf('-- Please read train data\n');
             end
-            
+            clear predict_label test_raw_label test_raw_inst model;
             
         % Perform prediction on test data
         case 'P'
@@ -233,7 +237,7 @@ while 1
             else
                fprintf('-- Please read test data\n');
             end
-           
+            clear predict_label test_raw_label test_raw_inst model;
             
         % Exit    
         case 'E'
