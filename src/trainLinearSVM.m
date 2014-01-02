@@ -1,4 +1,4 @@
-function model = trainLinearSVM_downsample( down_inst, train_label, train_inst, C )
+function model = trainLinearSVM( down_inst, train_label, train_inst, C )
 
 %addpath('./lib/libsvm');
 

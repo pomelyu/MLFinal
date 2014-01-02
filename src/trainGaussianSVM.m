@@ -1,4 +1,4 @@
-function model = trainGaussianSVM_downsample( down_inst, train_label, train_inst, sigma, C )
+function model = trainGaussianSVM( down_inst, train_label, train_inst, sigma, C )
 
 n = size(sigma,2);
 m = size(C,2);

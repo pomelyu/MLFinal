@@ -7,14 +7,13 @@ MLFinal
 [Directory]
 ---------------------
 ```
+ /data    :  raw data and processed data
  /lib     :  library we use
                 * libsvm : for matlab2013 & osx10.9
                            for matlab2010 & windows 8
  /log     :  log for Ein
  /result  :  result of prediction, which is used to upload
  /save    :  temporary data or model
-                * train_data
-                * test_data
                 * train_model : to reuse them in blending and bagging
  /src     :  source code
 
@@ -37,6 +36,9 @@ Since there are no labels in test data, the prediction has no meaning.
 [2] Multiclass PLA
 [4] Linear SVM using downsampling with 5-fold validation in C = 0.008:0.002:0.016.
 [7] Gaussian kernel SVM using downsampling with 5-fold validation in Gimma = [10 100 1000] and C = [0.1 1 10].
+[10]Linear SVM using cropped image
+[13]Gaussian kernel SVM using cropped image
+[16]
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.

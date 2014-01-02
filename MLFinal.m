@@ -6,6 +6,8 @@ addpath('./src');
 addpath('./save');
 % directory of libsvm
 addpath('./lib/libsvm');
+% directory of adaboost
+addpath('./lib/gentleboost');
 
 %% training mode
 model_name = 'None';
@@ -31,6 +33,7 @@ while 1
     fprintf('   [7] Gaussian Kernel SVM + downSampling\n');
     fprintf('   [10]Linear SVM with cropping\n');
     fprintf('   [13]Gaussian Kernel SVM + cropping\n');
+    fprintf('   [16]Multi-class Adaboost\n');
     fprintf('----------------------------------\n');
     % ========== End Add model choice ===================
     fprintf('   [R] Read training data\n');
@@ -156,7 +159,7 @@ while 1
                     if exist('./data/train_cropping_inst.mat', 'file') == 2
                         load ./data/train_cropping_inst.mat
                     else
-                        train_cropping_inst = DownSampling(train_raw_inst);
+                        train_cropping_inst = ImgCropping(train_raw_inst);
                         save ./data/train_cropping_inst.mat train_cropping_inst
                     end
                     fprintf('-- End Cropping\n');
@@ -167,6 +170,32 @@ while 1
                     model_name = 'Gaussian SVM with Cropping';
                     model_idx = 13;
                     save ./save/model_GaussianSVM_Cropping.mat model
+                else
+                    fprintf('-- Please read training data\n');
+                end
+            end
+            clear train_cropping_inst;
+            
+        
+        case '16'
+            % if model already exist, just load to workspace
+            if exist('./save/model_Adaboost.mat', 'file') == 2
+                load ./save/model_Adaboost.mat
+                model_name = 'Multi-class Adaboost';
+                model_idx = 16;
+            else
+                if exist('train_raw_inst', 'var') == 1
+                    if exist('./data/train_cropping_inst.mat', 'file') == 2
+                        load ./data/train_cropping_inst.mat
+                    else
+                        train_cropping_inst = ImgCropping(train_raw_inst);
+                        save ./data/train_cropping_inst.mat train_cropping_inst
+                    end
+                    fprintf('-- End Cropping\n');
+                    model = trainAdaboost(train_cropping_inst, train_raw_label);
+                    model_name = 'Multi-class Adaboost';
+                    model_idx = 16;
+                    save ./save/model_Adaboost.mat model
                 else
                     fprintf('-- Please read training data\n');
                 end
@@ -225,17 +254,17 @@ while 1
         % Perform prediction on test data
         case 'P'
             if exist('test_raw_inst', 'var') == 1
-               [predict_label, Eout] = TestModel(test_raw_label, test_raw_inst, model, model_idx);
-               fprintf('-- Done with Eout = %2.2d%\n', Eout*100);
+                [predict_label, Eout] = TestModel(test_raw_label, test_raw_inst, model, model_idx);
+                fprintf('-- Done with Eout = %2.2d%\n', Eout*100);
                
-               % print predict label in ./result/model_x_predict.txt
-               fid = fopen(['./result/model_' num2str(model_idx) '_predict.txt'], 'w');
-               for i=1:size(predict_label,1);
-                   fprintf(fid, '%d\n', predict_label(i,1));
-               end
-               fclose(fid);
+                % print predict label in ./result/model_x_predict.txt
+                fid = fopen(['./result/model_' num2str(model_idx) '_predict.txt'], 'w');
+                for i=1:size(predict_label,1);
+                    fprintf(fid, '%d\n', predict_label(i,1));
+                end
+                fclose(fid);
             else
-               fprintf('-- Please read test data\n');
+                fprintf('-- Please read test data\n');
             end
             clear predict_label test_raw_label test_raw_inst model;
             
@@ -262,6 +291,12 @@ switch(model_idx);
         [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
     case 7
         [predict_label, Eout] = testGaussianSVM(test_label, test_inst, model);
+    case 10
+        [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
+    case 13
+        [predict_label, Eout] = testGaussianSVM(test_label, test_inst, model);
+    case 16
+        [predict_label, Eout] = testAdaboost(test_label, test_inst, model);
     % ========== End model testing =====================
     otherwise
         fprintf('-- Please training data first\n');
