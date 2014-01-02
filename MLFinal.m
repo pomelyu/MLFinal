@@ -7,7 +7,7 @@ addpath('./save');
 % directory of libsvm
 addpath('./lib/libsvm');
 % directory of adaboost
-addpath('./lib/gentleboost');
+%addpath('./lib/gentleboost');
 
 %% training mode
 model_name = 'None';
@@ -136,7 +136,7 @@ while 1
                         save ./data/train_cropping_inst.mat train_cropping_inst
                     end
                     fprintf('-- End Cropping\n');
-                    C = [0.01 0.1 1 10];
+                    C = 0.0001:0.0001:0.001;
                     model = trainLinearSVM(train_cropping_inst,... 
                         train_raw_label, train_cropping_inst, C);
                     model_name = 'Linear SVM with Cropping';
