@@ -11,6 +11,16 @@ addpath('./lib/libsvm');
 model_name = 'None';
 model_idx  = 0;
 
+% read default training data
+if exist('./data/trainData.mat', 'file') == 2
+    load ./data/trainData.mat
+else
+    fprintf('-- Loadind default training data\n');
+    [train_raw_label, train_raw_inst] = libsvmread('ml2013final_train.dat');
+    save ./data/trainData.mat train_raw_label train_raw_inst;
+end
+
+
 %% implement
 while 1
     % ========== Add training model chice here ==========
@@ -26,16 +36,7 @@ while 1
     fprintf('   [P] Prediction with model %s\n', model_name);
     fprintf('   [C] Calculate Ein with model %s\n', model_name);
     fprintf('   [E] Exit.\n');
-    fprintf('==================================\n');
-    
-    % read default training data
-    if exist('./save/trainData.mat', 'file') == 2
-        load ./save/trainData.mat
-    else
-        fprintf('-- Loadind default training data\n');
-        [train_raw_label, train_raw_inst] = libsvmread('ml2013final_train.dat');
-        save ./save/trainData.mat train_raw_label train_raw_inst;
-    end
+    fprintf('==================================\n');   
     
     type = input('-- Type = ? ', 's');
     
@@ -50,7 +51,8 @@ while 1
             else
                 if exist('train_raw_inst', 'var') == 1 
                     C = [1 0.1 0.01 0.001 0.0001];
-                    model = trainLinearSVM(train_raw_label, train_raw_inst, C);
+                    model = trainLinearSVM(train_raw_inst, ...
+                        train_raw_label, train_raw_inst, C);
                     model_name = 'Linear SVM';
                     model_idx = 1;
                     save ./save/model_LinearSVM.mat model
@@ -67,15 +69,15 @@ while 1
                 model_idx = 4;
             else
                 if exist('train_raw_inst', 'var') == 1
-                    if exist('./save/train_downsampling_inst.mat', 'file') == 2
-                        load ./save/train_downsampling_inst.mat
+                    if exist('./data/train_downsampling_inst.mat', 'file') == 2
+                        load ./data/train_downsampling_inst.mat
                     else
                         train_downsampling_inst = DownSampling(train_raw_inst);
-                        save ./save/train_downsampling_inst.mat train_downsampling_inst
+                        save ./data/train_downsampling_inst.mat train_downsampling_inst
                     end
                     fprintf('-- End downSampling\n');
                     C = 0.008:0.002:0.016;
-                    model = trainLinearSVM_downsample(train_downsampling_inst,... 
+                    model = trainLinearSVM(train_downsampling_inst,... 
                         train_raw_label, train_raw_inst, C);
                     model_name = 'Linear SVM with DownSampling';
                     model_idx = 4;
@@ -93,16 +95,16 @@ while 1
                 model_idx = 7;
             else
                 if exist('train_raw_inst', 'var') == 1
-                    if exist('./save/train_downsampling_inst.mat', 'file') == 2
-                        load ./save/train_downsampling_inst.mat
+                    if exist('./data/train_downsampling_inst.mat', 'file') == 2
+                        load ./data/train_downsampling_inst.mat
                     else
                         train_downsampling_inst = DownSampling(train_raw_inst);
-                        save ./save/train_downsampling_inst.mat train_downsampling_inst
+                        save ./data/train_downsampling_inst.mat train_downsampling_inst
                     end
                     fprintf('-- End downSampling\n');
                     sigma = [10 100 1000];
                     C = [0.1 1 10];
-                    model = trainGaussianSVM_downsample(train_downsampling_inst, ...
+                    model = trainGaussianSVM(train_downsampling_inst, ...
                         train_raw_label, train_raw_inst, sigma, C);
                     model_name = 'Gaussian SVM with DownSampling';
                     model_idx = 7;
@@ -120,22 +122,22 @@ while 1
                 file_name = 'ml2013final_train.dat';
             end
             [train_raw_label, train_raw_inst] = libsvmread(file_name);
-            save ./save/trainData.mat train_raw_label train_raw_inst;
+            save ./data/trainData.mat train_raw_label train_raw_inst;
             
             
         % Read test data
         case 'T'
             file_name = input('-- Enter the test data or remain blank for default -- ', 's');
             if strcmp(file_name, '')
-                if exist('./save/testData.mat', 'file') == 2
-                    load ./save/testData.mat
+                if exist('./dat/testData.mat', 'file') == 2
+                    load ./data/testData.mat
                 else
                     [test_raw_label, test_raw_inst] = libsvmread('ml2013final_test1.nolabel.dat');
-                    save ./save/testData.mat test_raw_label test_raw_inst;
+                    save ./data/testData.mat test_raw_label test_raw_inst;
                 end
             else
                 [test_raw_label, test_raw_inst] = libsvmread(file_name);
-                save ./save/testData.mat test_raw_label test_raw_inst;
+                save ./data/testData.mat test_raw_label test_raw_inst;
             end
             
         % Calculate Ein with model

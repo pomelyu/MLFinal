@@ -1,5 +1,4 @@
 *.DS_Store
 *.dat
-save/trainData.mat
-save/testData.mat
+data/
 log/tmp_log.txt
