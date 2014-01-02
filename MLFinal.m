@@ -17,6 +17,7 @@ while 1
     fprintf('==================================\n');
     fprintf('-- Choose the number of Problem --\n');
     fprintf('   [1] Linear SVM.\n');
+    frpintf('   [3] BP Neural Netwrok.\n')
     fprintf('   [4] Linear SVM with downSampling\n');
     fprintf('   [7] Gaussian Kernel SVM + downSampling\n');
     fprintf('----------------------------------\n');
@@ -58,6 +59,20 @@ while 1
                     fprintf('-- Please read training data\n')
                 end
             end
+        case '3'
+            load('./save/BPMLL.mat');
+            
+            %Set parameters for the BPMLL algorithm
+            dim=size(trainmatrix,2);
+            hidden_neuron=ceil(0.2*dim); % Set the number of hidden neurons to 20% of the input dimensionality
+            alpha=0.05;% Set the learning rate to 0.05
+            epochs=100; % Set the training epochs to 100, other paramters are set to their default values
+            
+            % Calling the main functions
+            [nets,errors]=BPMLL_train(trainmatrix,traintarget,hidden_neuron,alpha,epochs); % Invoking the training procedure
+            
+            net=nets{end,1};% Set the trained neural network to the one returned after all the training epochs
+            
             
         case '4'
             % if model already exist, just load to workspace
