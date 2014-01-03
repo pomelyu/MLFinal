@@ -56,7 +56,7 @@ while 1
             else
                 C = [1 0.1 0.01 0.001 0.0001];
                 model = trainLinearSVM(valid_inst, train_label, train_inst, C);
-                save(op, model);
+                save(op, 'model');
             end
             clear valid_inst train_inst train_label;
             
@@ -73,7 +73,7 @@ while 1
                 sigma = [10 100 1000];
                 C = [0.1 1 10];
                 model = trainGaussianSVM(valid_inst, train_label, train_inst, sigma, C);
-                save(op, model);
+                save(op, 'model');
             end
             clear valid_inst train_inst train_label;
             
@@ -88,7 +88,7 @@ while 1
                 load(op);
             else
                 model = trainAdaboost(train_label, train_inst);
-                save(op, model);
+                save(op, 'model');
             end
             clear valid_inst train_inst train_label;
             
