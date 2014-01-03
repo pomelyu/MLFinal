@@ -28,6 +28,7 @@ while 1
     fprintf('==================================\n');
     fprintf('-- Choose the number of Problem --\n');
     fprintf('   [1] Linear SVM.\n');
+    fprintf('   [3] Deep Belief Network (DBN)\n')
     fprintf('   [4] Gaussian Kernel SVM\n');
     fprintf('   [7] Multi-class Adaboost\n');
     fprintf('----------------------------------\n');
@@ -60,6 +61,21 @@ while 1
             end
             clear valid_inst train_inst train_label;
             
+        % ==== DBN ====    
+        case '3'
+            model_name = 'DBN';
+            model_idx  = 3;
+            [valid_inst, train_inst, train_label] = ChooseTrainData();
+            op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
+            % if model already exist, just load to workspace
+            if exist(op, 'file') == 2
+                load(op);
+            else
+                model = trainDBN(train_label, train_inst);
+                save(op, 'model');
+            end
+            clear valid_inst train_inst train_label;
+            
         % ==== Gaussian SVM ====    
         case '4'
             model_name = 'GaussianSVM';
@@ -75,8 +91,7 @@ while 1
                 model = trainGaussianSVM(valid_inst, train_label, train_inst, sigma, C);
                 save(op, 'model');
             end
-            clear valid_inst train_inst train_label;
-            
+            clear valid_inst train_inst train_label;            
         % ==== Adaboost ====
         case '7'
             model_name = 'Adaboost';
@@ -331,6 +346,8 @@ switch(model_idx);
     % ========== Add model testing here ================
     case 1
         [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
+    case 3
+        [predict_label, Eout] = testDBN(test_label, test_inst, model);
     case 4
         [predict_label, Eout] = testGaussianSVM(test_label, test_inst, model);
     case 7

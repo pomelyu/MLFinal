@@ -11,8 +11,9 @@ MLFinal
  /lib     :  library we use
                 * libsvm : for matlab2013 & osx10.9
                            for matlab2010 & windows 8
+                * gentleboost : for multi-class adaboost 
  /log     :  log for Ein
- /result  :  result of prediction, which is used to upload
+ /result  :  result of prediction, which would be used to upload
  /save    :  temporary data or model
                 * train_model : to reuse them in blending and bagging
  /src     :  source code
@@ -28,16 +29,16 @@ In command window type
 ```
 MLFinal
 ```
-In first time, Default training data would be loaded in workspace automatically. Then select appropriate training model. If the there has been the model in /save, MLFinal would use the result immediately. Otherwise, delete the corresponding model in /save, and MLFinal would training data use the model again. Finally, type [P] to predict.
-Since there are no labels in test data, the prediction has no meaning.
+Then, select appropriate training model, validation set and trainng set. If the there has been the model in /save, MLFinal would use the result immediately. Otherwise, delete the corresponding model in /save, and MLFinal would training data use the model again.
 
 ```
 [1] Linear SVM with 5-fold validation in C = [1 0.1 0.01 0.001 0.0001].
 [4] Gaussian SVM using downsampling with 5-fold validation in Gimma = [10 100 1000] and C = [0.1 1 10].
+[7] Multi-class Adaboost
 
 [R] to read training data. If data already in ./save/, just use it.
 [T] to read test data. If data already in ./save/, just use it.
-[P] Predict. You shoud run training before predict.
+[P] Predict.
 [C] Calculate Ein of training data with specific model
 [E] Quit
 ```
@@ -59,21 +60,19 @@ In ML_Final.m, based on case'1' in switch, add
 ```
 % ========== Add training model here ================
 case 'n'
-    if exist('./save/model_NEW_MODEL.mat', 'file') == 2
-        load ./save/model_NEW_MODEL.mat
-        model_name = 'NEW_MODEL';
-        model_idx = n;
+    model_name = 'NEW_MODEL';
+    model_idx  = n;
+    [valid_inst, train_inst, train_label] = ChooseTrainData();
+    op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
+    % if model already exist, just load to workspace
+    if exist(op, 'file') == 2
+        load(op);
     else
-        if exist('train_raw_inst', 'var') == 1                    
-            model = trainNEW_MODEL(train_raw_label, train_raw_inst);
-            model_name = 'NEW_MODEL';
-            model_idx = 1;
-            save ./save/model_NEW_MODEL.mat model
-        else
-            fprintf('-- Please read training data\n')
-        end
+        YOUR_PARAMETER;
+        model = trainNEW_MODEL(valid_inst, train_label, train_inst, YOUR_PARAMETER);
+        save(op, 'model');
     end
-            
+    clear valid_inst train_inst train_label;  
 % ========== End training model ====================
 ```
 ```
@@ -85,7 +84,7 @@ case n
 
 In /src, add two function
 ```
-model = trainNEW_MODEL( train_label, train_inst )
+model = trainNEW_MODEL( valid_inst, train_label, train_inst )
 [predict_label, Err] = testNEW_MODEL(test_label, test_inst, model)
 ```
   
@@ -93,14 +92,19 @@ model = trainNEW_MODEL( train_label, train_inst )
 ---------------------
 Read data by libsvmread
 ```
- train_raw_label : N x 1      double array
- train_raw_inst  : N x 12810  sparse matrix
+ train_raw
+     train_label : N x 1      double array
+     train_inst  : N x 12810  sparse matrix
                       * each image is 105 x 122 = 12810 pixel
 
- test_raw_label  : N x 1      double array
- test_raw_inst   : N x 12810  sparse matrix
-
- train_downsampling_inst
-                 : N x 3233 sparse matric
+ train_downsampling
+     train_label : N x 1      double array
+     train_inst  : N x 3233 sparse matric
                       * each image is 53 x 61 = 3233 pixel
+
+ train_crop
+     train_label : N x 1      double array
+     train_inst  : N x 3600 sparse matric
+                      * each image is 60 x 60 = 3233 pixel
+
 ```
