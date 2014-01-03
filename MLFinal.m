@@ -18,7 +18,7 @@ valid_name  = 'raw';
 valid_idx   = 0;
 
 %% test data
-test_name   = 'raw';
+%test_name   = 'raw';
 test_idx    = 0;
 
 
@@ -65,7 +65,7 @@ while 1
         case '3'
             model_name = 'DBN';
             model_idx  = 3;
-            [valid_inst, train_inst, train_label] = ChooseTrainData();
+            [~, train_inst, train_label] = ChooseTrainData();
             op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
             % if model already exist, just load to workspace
             if exist(op, 'file') == 2
@@ -96,13 +96,14 @@ while 1
         case '7'
             model_name = 'Adaboost';
             model_idx  = 7;
-            [valid_inst, train_inst, train_label] = ChooseTrainData();
+            [~, train_inst, train_label] = ChooseTrainData();
             op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
             % if model already exist, just load to workspace
             if exist(op, 'file') == 2
                 load(op);
             else
-                model = trainAdaboost(train_label, train_inst);
+                it = 5;
+                model = trainAdaboost(train_label, train_inst(:,1:100), it);
                 save(op, 'model');
             end
             clear valid_inst train_inst train_label;
@@ -129,18 +130,18 @@ while 1
                 if exist('./dat/test_raw.mat', 'file') == 2
                     load ./data/test_raw.mat
                 else
-                    [test_raw_label, test_raw_inst] = libsvmread('ml2013final_test1.nolabel.dat');
+                    [test_label, test_inst] = libsvmread('ml2013final_test1.nolabel.dat');
                     save ./data/test_raw.mat test_label test_inst;
                 end
             else
-                [test_raw_label, test_raw_inst] = libsvmread(file_name);
+                [test_label, test_inst] = libsvmread(file_name);
                 save ./data/test_raw.mat test_label test_inst;
             end
             
         % Calculate Ein with model
         case 'C'
             [test_inst, test_label] = ChooseTestData('train');
-            [predict_label, Ein] = TestModel(test_label, test_inst, model, model_idx);
+            [~, Ein] = TestModel(test_label, test_inst, model, model_idx);
             fprintf('-- Done with Ein = %2.2f%%\n', Ein*100);
             
             % If input 'y', record Ein in ./log/data_time.txt.
@@ -292,7 +293,7 @@ end
             
             switch test_idx
                 case 2
-                    test_name = 'down';
+                    %test_name = 'down';
                     if exist('./data/test_downsampling.mat', 'file') == 2
                         load ./data/test_downsampling.mat
                     else
@@ -302,7 +303,7 @@ end
                     end
                     
                 case 3
-                    test_name = 'crop';
+                    %test_name = 'crop';
                     if exist('./data/test_crop.mat', 'file') == 2
                         load ./data/test_crop.mat
                     else
@@ -311,26 +312,26 @@ end
                         save ./data/test_crop test_label test_inst;
                     end
                 otherwise
-                    test_name = 'raw';
+                    %test_name = 'raw';
             end
             
         else
             S = load('./data/train_raw.mat');
             switch test_idx
                 case 2
-                    test_name = 'down';
+                    %test_name = 'down';
                     P = load('./data/train_downsampling.mat');
                     test_label = S.train_label;
                     test_inst  = P.train_inst;
                     
                 case 3
-                    test_name = 'crop';
+                    %test_name = 'crop';
                     P = load('./data/train_crop.mat');
                     test_label = S.train_label;
                     test_inst  = P.train_inst;
                     
                 otherwise
-                    test_name = 'raw';
+                    %test_name = 'raw';
                     test_label = S.train_label;
                     test_inst  = S.train_inst;
             end

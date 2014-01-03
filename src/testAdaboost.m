@@ -1,15 +1,35 @@
 function [predict_label, Err] = testAdaboost( test_label, test_inst, model )
 
-rmpath('./lib/libsvm');
-addpath('./lib/gentleboost');
+addpath('./lib/adaboost');
 
 n = size(test_label, 1);
 
-[predict_label , fxtrain] = gentleboost_predict(test_inst, model);
+% Total 66 classifier C(12,2) = 12x11/2 = 66
+predict_matrix = zeros(n, 66);
+
+k = 0;
+rStr = '';
+for i = 1:12
+    for j = 1:i-1
+        k = k+1;
+        predict_class = adabost('apply', test_inst, model{i,j});
+        predict_matrix(predict_class ==  1, k) = i;
+        predict_matrix(predict_class == -1, k) = j;
+        
+        %% Reveal progress
+        k = k+1;
+        msg = sprintf('-- Done %02d/66', k);
+        fprintf([rStr msg]);
+        rStr = repmat(sprintf('\b'),1,length(msg));
+    end
+end
+fprintf('\n');
+
+predict_label = mode(perdict_matrix, 2);
+
 Err = sum(test_label ~= predict_label)/n;
 
-addpath('./lib/libsvm');
-rmpath('./lib/gentleboost');
+rmpath('./lib/adaboost');
 
 end
 
