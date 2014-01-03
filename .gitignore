@@ -2,4 +2,5 @@
 *.dat
 data/
 save/
-log/tmp_log.txt
+log/
+result/

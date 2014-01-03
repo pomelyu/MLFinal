@@ -53,11 +53,11 @@ while 1
             op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
             % if model already exist, just load to workspace
             if exist(op, 'file') == 2
-                load op
+                load(op);
             else
                 C = [1 0.1 0.01 0.001 0.0001];
                 model = trainLinearSVM(valid_inst, train_label, train_inst, C);
-                save op model
+                save(op, model);
             end
             clear valid_inst train_inst train_label;
             
@@ -69,12 +69,12 @@ while 1
             op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
             % if model already exist, just load to workspace
             if exist(op, 'file') == 2
-                load op
+                load(op);
             else
                 sigma = [10 100 1000];
                 C = [0.1 1 10];
                 model = trainGaussianSVM(valid_inst, train_label, train_inst, sigma, C);
-                save op model
+                save(op, model);
             end
             clear valid_inst train_inst train_label;
             
@@ -86,10 +86,10 @@ while 1
             op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
             % if model already exist, just load to workspace
             if exist(op, 'file') == 2
-                load op
+                load(op);
             else
                     model = trainAdaboost(train_label, train_inst);
-                    save op model
+                    save(op, model);
             end
             clear valid_inst train_inst train_label;
             
@@ -116,11 +116,11 @@ while 1
                     load ./data/test_raw.mat
                 else
                     [test_raw_label, test_raw_inst] = libsvmread('ml2013final_test1.nolabel.dat');
-                    save ./data/test_raw.mat test_raw_label test_raw_inst;
+                    save ./data/test_raw.mat test_label test_inst;
                 end
             else
                 [test_raw_label, test_raw_inst] = libsvmread(file_name);
-                save ./data/test_raw.mat test_raw_label test_raw_inst;
+                save ./data/test_raw.mat test_label test_inst;
             end
             
         % Calculate Ein with model
@@ -301,17 +301,17 @@ end
             end
             
         else
-            S = load ./data/train_raw.mat;
+            S = load('./data/train_raw.mat');
             switch test_idx
                 case 2
                     test_name = 'down';
-                    P = load ./data/train_down.mat;
+                    P = load('./data/train_down.mat');
                     test_label = S.train_label;
                     test_inst  = P.train_inst;
                     
                 case 3
                     test_name = 'crop';
-                    P = load ./data/train_crop.mat;
+                    P = load('./data/train_crop.mat');
                     test_label = S.train_label;
                     test_inst  = P.train_inst;
                     
