@@ -6,8 +6,6 @@ addpath('./src');
 addpath('./save');
 % directory of libsvm
 addpath('./lib/libsvm');
-% directory of adaboost
-%addpath('./lib/gentleboost');
 
 %% training mode
 model_name  = 'none';
@@ -34,6 +32,7 @@ while 1
     fprintf('   [7] Multi-class Adaboost\n');
     fprintf('----------------------------------\n');
     % ========== End Add model choice ===================
+    
     fprintf('   [R] Read raw training data\n');
     fprintf('   [T] Read raw test data\n');
     fprintf('   [P] Prediction with model %s\n', model_name);
@@ -62,9 +61,9 @@ while 1
             clear valid_inst train_inst train_label;
             
         % ==== Gaussian SVM ====    
-        case '2'
+        case '4'
             model_name = 'GaussianSVM';
-            model_idx  = 2;
+            model_idx  = 4;
             [valid_inst, train_inst, train_label] = ChooseTrainData();
             op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
             % if model already exist, just load to workspace
@@ -79,17 +78,17 @@ while 1
             clear valid_inst train_inst train_label;
             
         % ==== Adaboost ====
-        case '3'
+        case '7'
             model_name = 'Adaboost';
-            model_idx  = 3;
+            model_idx  = 7;
             [valid_inst, train_inst, train_label] = ChooseTrainData();
             op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
             % if model already exist, just load to workspace
             if exist(op, 'file') == 2
                 load(op);
             else
-                    model = trainAdaboost(train_label, train_inst);
-                    save(op, model);
+                model = trainAdaboost(train_label, train_inst);
+                save(op, model);
             end
             clear valid_inst train_inst train_label;
             
@@ -147,7 +146,7 @@ while 1
         case 'P'
             [test_inst, test_label] = ChooseTestData('test');
             [predict_label, Eout] = TestModel(test_label, test_inst, model, model_idx);
-            fprintf('-- Done with Eout = %2.2d%\n', Eout*100);
+            fprintf('-- Done with Eout = %2.2d%\n\n', Eout*100);
             
             % print predict label in ./result/model_x_predict.txt
             fid = fopen(['./result/model_' model_name '_' valid_name '_' train_name '_predict.txt'], 'w');
@@ -279,12 +278,12 @@ end
             switch test_idx
                 case 2
                     test_name = 'down';
-                    if exist('./data/test_down.mat', 'file') == 2
-                        load ./data/test_down.mat
+                    if exist('./data/test_downsampling.mat', 'file') == 2
+                        load ./data/test_downsampling.mat
                     else
                         fprintf('-- Perform downsampling\n');
                         test_inst = DownSampling(test_inst);
-                        save ./data/test_down.mat test_label test_inst;
+                        save ./data/test_downsampling.mat test_label test_inst;
                     end
                     
                 case 3
@@ -305,7 +304,7 @@ end
             switch test_idx
                 case 2
                     test_name = 'down';
-                    P = load('./data/train_down.mat');
+                    P = load('./data/train_downsampling.mat');
                     test_label = S.train_label;
                     test_inst  = P.train_inst;
                     
@@ -332,9 +331,9 @@ switch(model_idx);
     % ========== Add model testing here ================
     case 1
         [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
-    case 2
+    case 4
         [predict_label, Eout] = testGaussianSVM(test_label, test_inst, model);
-    case 3
+    case 7
         [predict_label, Eout] = testAdaboost(test_label, test_inst, model);
     % ========== End model testing =====================
     otherwise
