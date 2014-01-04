@@ -1,8 +1,7 @@
-function model = trainAdaboost( train_label, train_inst, it)
+function model = trainAdaboost( train_label, train_inst)
 
-addpath('./lib/GML_AdaBoost_Matlab_Toolbox');
-
-model = cell(12,12);
+rmpath('./lib/libsvm');
+addpath('./lib/gentleboost');
 
 % divide data to 12 catalog
 DataSet  = cell(1, 12);
@@ -13,32 +12,34 @@ for i = 1:12
     DataSize(1, i) = size(find(tmp > 0), 1);
 end
 
+model = cell(12,12);
+
 % perform OVO
 %   for example label 2 vs label 1
 %   1 for label 2, -1 for label 1
-% rStr = '';
+rStr = '';
 k = 0;
-weak_learner = tree_node_w(3);
+options.weaklearner = 0;
+options.T           = 10;
 for i = 1:12
     for j = 1:i-1
-        tic
-        [RLearners, RWeights] = GentleAdaBoost(weak_learner, ...
-            [DataSet{1,i}; DataSet{1,j}]', ...
-            [ones(DataSize(1,i),1); -ones(DataSize(1,j),1)]', it);
-        model{i,j} = {RLearners, RWeights};
-        toc
+        model{i,j} = gentleboost_model([DataSet{1,i}; DataSet{1,j}], [ones(DataSize(1,i),1); -ones(DataSize(1,j),1)], options);
+        
         %% Reveal progress
         k = k+1;
-        fprintf('-- Done %02d/66\n', k);
-%         msg = sprintf('-- Done %02d/66', k);
-%         fprintf([rStr msg]);
-%         rStr = repmat(sprintf('\b'),1,length(msg));
+        msg = sprintf('-- Done %02d/66', k);
+        fprintf([rStr msg]);
+        rStr = repmat(sprintf('\b'),1,length(msg));
     end
 end
-
 fprintf('\n');
 
-rmpath('./lib/GML_AdaBoost_Matlab_Toolbox');
+% options.weaklearner = 0;
+% options.T           = 10;
+% model = gentleboost_model(train_inst, train_label, options);
+
+rmpath('./lib/gentleboost');
+addpath('./lib/libsvm');
 
 end
 

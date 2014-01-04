@@ -31,6 +31,7 @@ while 1
     fprintf('   [3] Deep Belief Network (DBN)\n')
     fprintf('   [4] Gaussian Kernel SVM\n');
     fprintf('   [7] Multi-class Adaboost\n');
+    fprintf('  [10] Random Forest\n')
     fprintf('----------------------------------\n');
     % ========== End Add model choice ===================
     
@@ -102,8 +103,21 @@ while 1
             if exist(op, 'file') == 2
                 load(op);
             else
-                it = 10;
-                model = trainAdaboost(train_label(:,:), train_inst(:,:), it);
+                model = trainAdaboost(train_label(:,:), train_inst(:,:));
+                save(op, 'model');
+            end
+            clear valid_inst train_inst train_label;
+        % ==== Adaboost ====
+        case '10'
+            model_name = 'RF';
+            model_idx  = 10;
+            [~, train_inst, train_label] = ChooseTrainData();
+            op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
+            % if model already exist, just load to workspace
+            if exist(op, 'file') == 2
+                load(op);
+            else
+                model = trainRF(train_label(:,:), train_inst(:,:));
                 save(op, 'model');
             end
             clear valid_inst train_inst train_label;
@@ -353,6 +367,8 @@ switch(model_idx);
         [predict_label, Eout] = testGaussianSVM(test_label, test_inst, model);
     case 7
         [predict_label, Eout] = testAdaboost(test_label, test_inst, model);
+    case 10
+        [predict_label, Eout] = testRF(test_label, test_inst, model);
     % ========== End model testing =====================
     otherwise
         fprintf('-- Please training data first\n');
