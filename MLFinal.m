@@ -31,7 +31,9 @@ while 1
     fprintf('   [3] Deep Belief Network (DBN)\n')
     fprintf('   [4] Gaussian Kernel SVM\n');
     fprintf('   [7] Multi-class Adaboost\n');
-    fprintf('  [10] Random Forest\n')
+    fprintf('  [10] Random Forest\n');
+    fprintf('  [13] Polynomial Kernel SVM\n');
+    fprintf('  [16] Sigmoid Kernel SVM\n');
     fprintf('----------------------------------\n');
     % ========== End Add model choice ===================
     
@@ -39,6 +41,7 @@ while 1
     fprintf('   [T] Read raw test data\n');
     fprintf('   [P] Prediction with model %s\n', model_name);
     fprintf('   [C] Calculate Ein with model %s\n', model_name);
+    fprintf('   [B] Blending by voting\n')
     fprintf('   [E] Exit.\n');
     fprintf('==================================\n');   
     
@@ -107,7 +110,7 @@ while 1
                 save(op, 'model');
             end
             clear valid_inst train_inst train_label;
-        % ==== Adaboost ====
+        % ==== Random Forest ====
         case '10'
             model_name = 'RF';
             model_idx  = 10;
@@ -118,6 +121,35 @@ while 1
                 load(op);
             else
                 model = trainRF(train_label(:,:), train_inst(:,:));
+                save(op, 'model');
+            end
+            clear valid_inst train_inst train_label;
+            
+        % ==== Polynomial SVM ====
+        case '13'
+            model_name = 'PolySVM';
+            model_idx  = 13;
+            [~, train_inst, train_label] = ChooseTrainData();
+            op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
+            % if model already exist, just load to workspace
+            if exist(op, 'file') == 2
+                load(op);
+            else
+                model = trainPolySVM(train_label(:,:), train_inst(:,:));
+                save(op, 'model');
+            end
+            clear valid_inst train_inst train_label;
+            
+        case '16'
+            model_name = 'SigmoidSVM';
+            model_idx  = 16;
+            [~, train_inst, train_label] = ChooseTrainData();
+            op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
+            % if model already exist, just load to workspace
+            if exist(op, 'file') == 2
+                load(op);
+            else
+                model = trainSigmoidSVM(train_label(:,:), train_inst(:,:));
                 save(op, 'model');
             end
             clear valid_inst train_inst train_label;
@@ -186,6 +218,15 @@ while 1
             fclose(fid);
             
             clear predict_label test_label test_inst model;
+        
+        % Perform blending on file in ./result
+        case 'B'
+            predict_label = Blending();           
+            fid = fopen('./result/blending.txt', 'w');
+            for i=1:size(predict_label,1);
+                fprintf(fid, '%d\n', predict_label(i,1));
+            end
+            fclose(fid);
             
         % Exit    
         case 'E'
@@ -206,6 +247,7 @@ end
         fprintf('   [1] Raw image.\n');
         fprintf('   [2] Image with downsampling\n');
         fprintf('   [3] Image with cropping\n');
+        fprintf('   [4] Image with cropping and binarization\n');
         fprintf('---------------------------------\n');
         valid_idx = input('-- Type ? ');
         
@@ -238,6 +280,15 @@ end
                     train_inst = ImgCropping(train_inst);
                     save ./data/train_crop train_label train_inst;
                 end
+            case 4
+                valid_name  = 'crop_binary';
+                if exist('./data/train_crop_binary.mat', 'file') == 2
+                    load ./data/train_crop_binary.mat
+                else
+                    load ./data/train_crop.mat
+                    train_inst = Binarize(train_inst);
+                    save ./data/train_crop_binary.mat train_label train_inst;
+                end
             otherwise
                 valid_name  = 'raw';
         end
@@ -249,6 +300,7 @@ end
         fprintf('   [1] Raw image.\n');
         fprintf('   [2] Image with downsampling\n');
         fprintf('   [3] Image with cropping\n');
+        fprintf('   [4] Image with cropping and binarization\n');
         fprintf('---------------------------------\n');
         train_idx = input('-- Type ? ');
         
@@ -281,6 +333,15 @@ end
                     train_inst = ImgCropping(train_inst);
                     save ./data/train_crop train_label train_inst;
                 end
+            case 4
+                train_name  = 'crop_binary';
+                if exist('./data/train_crop_binary.mat', 'file') == 2
+                    load ./data/train_crop_binary.mat
+                else
+                    load ./data/train_crop.mat
+                    train_inst = Binarize(train_inst);
+                    save ./data/train_crop_binary.mat train_label train_inst;
+                end
             otherwise
                 train_name  = 'raw';
         end
@@ -293,6 +354,7 @@ end
         fprintf('   [1] Raw image.\n');
         fprintf('   [2] Image with downsampling\n');
         fprintf('   [3] Image with cropping\n');
+        fprintf('   [4] Image with cropping and binarization\n');
         fprintf('---------------------------------\n');
         test_idx = input('-- Type ? ');
         
@@ -325,6 +387,15 @@ end
                         test_inst = ImgCropping(test_inst);
                         save ./data/test_crop test_label test_inst;
                     end
+                case 4
+                    %test_name  = 'crop_binary';
+                    if exist('./data/test_crop_binary.mat', 'file') == 2
+                        load ./data/test_crop_binary.mat
+                    else
+                        load ./data/test_crop.mat
+                        test_inst = Binarize(test_inst);
+                        save ./data/test_crop_binary.mat;
+                    end
                 otherwise
                     %test_name = 'raw';
             end
@@ -341,6 +412,10 @@ end
                 case 3
                     %test_name = 'crop';
                     P = load('./data/train_crop.mat');
+                    test_label = S.train_label;
+                    test_inst  = P.train_inst;
+                case 4
+                    P = load('./data/train_crop_binary.mat');
                     test_label = S.train_label;
                     test_inst  = P.train_inst;
                     
@@ -369,6 +444,10 @@ switch(model_idx);
         [predict_label, Eout] = testAdaboost(test_label, test_inst, model);
     case 10
         [predict_label, Eout] = testRF(test_label, test_inst, model);
+    case 13
+        [predict_label, Eout] = testPolySVM(test_label, test_inst, model);
+    case 16
+        [predict_label, Eout] = testSigmoidSVM(test_label, test_inst, model);
     % ========== End model testing =====================
     otherwise
         fprintf('-- Please training data first\n');

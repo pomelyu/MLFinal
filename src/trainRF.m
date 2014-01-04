@@ -2,7 +2,7 @@ function model = trainRF( train_label, train_inst )
 
 addpath('./lib/RFlib');
 
-options.depth           = 10;
+options.depth           = 15;
 options.numTree         = 100;
 options.numSplits       = 2;
 options.classifierID    = 2;

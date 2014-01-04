@@ -14,7 +14,7 @@ for i=1:n
 end
 
 [E, tmp] = max(E);
-[E, j] = max(E);
+[~, j] = max(E);
 i = tmp(1, j);
 
 paraStr = ['-s 0 -t 2 -g ' num2str(0.5/power(sigma(1,i),2)) ... 
