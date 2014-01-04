@@ -1,6 +1,6 @@
 function [predict_label, Err] = testAdaboost( test_label, test_inst, model )
 
-addpath('./lib/adaboost');
+addpath('./lib/GML_AdaBoost_Matlab_Toolbox');
 
 n = size(test_label, 1);
 
@@ -12,9 +12,11 @@ rStr = '';
 for i = 1:12
     for j = 1:i-1
         k = k+1;
-        predict_class = adabost('apply', test_inst, model{i,j});
-        predict_matrix(predict_class ==  1, k) = i;
-        predict_matrix(predict_class == -1, k) = j;
+        %predict_class = adabost('apply', test_inst, model{i,j});
+        S = model{i, j};
+        predict_class = sign(Classify(S.RLearners, S.RWeights, test_inst'));
+        predict_matrix(predict_class' ==  1, k) = i;
+        predict_matrix(predict_class' == -1, k) = j;
         
         %% Reveal progress
         k = k+1;
@@ -29,7 +31,7 @@ predict_label = mode(perdict_matrix, 2);
 
 Err = sum(test_label ~= predict_label)/n;
 
-rmpath('./lib/adaboost');
+rmpath('./lib/GML_AdaBoost_Matlab_Toolbox');
 
 end
 

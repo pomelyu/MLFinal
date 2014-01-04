@@ -102,8 +102,8 @@ while 1
             if exist(op, 'file') == 2
                 load(op);
             else
-                it = 5;
-                model = trainAdaboost(train_label, train_inst(:,1:100), it);
+                it = 10;
+                model = trainAdaboost(train_label(:,:), train_inst(:,:), it);
                 save(op, 'model');
             end
             clear valid_inst train_inst train_label;
