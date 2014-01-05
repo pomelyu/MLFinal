@@ -200,7 +200,7 @@ while 1
             end
             fid = fopen(['./log/' file_name '.txt'], 'w');
             fprintf(fid, ['Perform model with model ' model_name '_' valid_name '_' train_name '\n']);
-            fprintf(fid, '-- Done with Ein = %2.2f%%\n\n', Ein*100);
+            fprintf(fid, '-- Done with Ein = %2.2f%%\n', Ein*100);
             fclose(fid);
             clear predict_label test_label test_inst model;
             
@@ -208,7 +208,7 @@ while 1
         case 'P'
             [test_inst, test_label] = ChooseTestData('test');
             [predict_label, Eout] = TestModel(test_label, test_inst, model, model_idx);
-            fprintf('-- Done with Eout = %2.2d%\n\n', Eout*100);
+            fprintf('-- Done with Eout = %2.2f%%\n', Eout*100);
             
             % print predict label in ./result/model_x_predict.txt
             fid = fopen(['./result/model_' model_name '_' valid_name '_' train_name '_predict.txt'], 'w');
