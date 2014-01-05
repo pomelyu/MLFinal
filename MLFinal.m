@@ -28,6 +28,7 @@ while 1
     fprintf('==================================\n');
     fprintf('-- Choose the number of Problem --\n');
     fprintf('   [1] Linear SVM.\n');
+    fprintf('   [2] Gaussian Kernel nu-SVR\n');
     fprintf('   [3] Deep Belief Network (DBN)\n')
     fprintf('   [4] Gaussian Kernel SVM\n');
     fprintf('   [7] Multi-class Adaboost\n');
@@ -61,6 +62,21 @@ while 1
             else
                 C = [1 0.1 0.01 0.001 0.0001];
                 model = trainLinearSVM(valid_inst, train_label, train_inst, C);
+                save(op, 'model');
+            end
+            clear valid_inst train_inst train_label;
+   
+        % ==== LinearSVM ====
+        case '2'
+            model_name = 'Gaussian_nuSVR';
+            model_idx  = 2;
+            [~, train_inst, train_label] = ChooseTrainData();
+            op = ['./save/model_' model_name '_' valid_name '_' train_name '.mat'];
+            % if model already exist, just load to workspace
+            if exist(op, 'file') == 2
+                load(op);
+            else
+                model = trainGaussian_nuSVR(train_label, train_inst);
                 save(op, 'model');
             end
             clear valid_inst train_inst train_label;
@@ -435,6 +451,8 @@ function [predict_label, Eout] = TestModel(test_label, test_inst, model, model_i
 switch(model_idx);
     % ========== Add model testing here ================
     case 1
+        [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
+    case 2
         [predict_label, Eout] = testLinearSVM(test_label, test_inst, model);
     case 3
         [predict_label, Eout] = testDBN(test_label, test_inst, model);
