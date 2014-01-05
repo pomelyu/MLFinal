@@ -1,8 +1,8 @@
 function model = trainSigmoidSVM( train_label, train_inst )
 
 % parameter
-gamma = [0.01 0.1 1 10];
-coef0 = [0.01 0.1 1 10];
+gamma = [0.01];
+coef0 = [0.2 0.6 1.0 1.4];
 
 sizeG = size(gamma, 2);
 sizeC = size(coef0, 2);
